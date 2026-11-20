@@ -60,10 +60,10 @@ $ docker compose exec backend bash
 
 ## Backend Tests
 
-To test the backend from the `backend` directory, run:
+For local development, run the tests from the repository root using the isolated database described in the [quality checks guide](../docs/quality-checks.md):
 
 ```console
-$ uv run bash scripts/test.sh
+$ bash scripts/test-isolated.sh backend
 ```
 
 The tests run with Pytest. Modify existing tests or add new ones in `./backend/tests/`.
@@ -72,18 +72,18 @@ If you use GitHub Actions, the tests will run automatically.
 
 ### Test a Running Stack
 
-If your stack is already up and you just want to run the tests, you can use:
+To run the tests against a disposable Compose stack with the test sources available in its backend container, use:
 
 ```bash
 docker compose exec backend bash scripts/tests-start.sh
 ```
 
-The `/app/backend/scripts/tests-start.sh` script calls `pytest`. If you need to pass extra arguments to `pytest`, you can pass them to that command and they will be forwarded.
+The `/app/backend/scripts/tests-start.sh` script runs the full Pytest suite. It accepts a title for the coverage report.
 
-For example, to stop on first error:
+To pass options or a test path to Pytest, use the isolated runner from the repository root:
 
 ```bash
-docker compose exec backend bash scripts/tests-start.sh -x
+bash scripts/test-isolated.sh backend -x tests/api/routes/test_items.py
 ```
 
 ### Test Coverage

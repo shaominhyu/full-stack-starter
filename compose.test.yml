@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:18-alpine
+    ports: !override
+      - "127.0.0.1::5432"
+
+  mailpit:
+    ports: !override
+      - "127.0.0.1::1025"
+
+  backend:
+    image: !reset null
+    command: !reset null
+    ports: !reset []
+    volumes: !reset []
+    labels: !reset []
+
+  playwright:
+    ports: !reset []
+    volumes: !reset []

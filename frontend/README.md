@@ -93,6 +93,8 @@ The frontend code is structured as follows:
 
 ## End-to-End Testing with Playwright
 
+For local changes, run Playwright in the isolated stack described in the [quality checks guide](../docs/quality-checks.md). From the repository root, `bash scripts/test-isolated.sh browser tests/items.spec.ts` runs the Items tests.
+
 The frontend includes initial end-to-end tests using Playwright. To run the tests, you need to have the Docker Compose stack running. Start the stack with the following command:
 
 ```bash

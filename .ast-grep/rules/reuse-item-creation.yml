@@ -1,0 +1,8 @@
+id: reuse-item-creation
+language: Python
+severity: error
+message: Create items through crud.create_item so routes share the persistence logic.
+rule:
+  any:
+    - pattern: Item($$$ARGS)
+    - pattern: Item.model_validate($$$ARGS)
