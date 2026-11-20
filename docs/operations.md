@@ -128,6 +128,6 @@ Adminer 是模板自带的图形化数据库管理工具。已有本地覆盖文
 | 任务 | 入口 |
 | --- | --- |
 | 自托管部署 | [Docker Compose 部署说明](../deployment-docker-compose.md)。使用 `compose.yml` 与 `compose.deploy.yml`，Traefik 提供 HTTPS，发布工作流由服务器上的自托管 Runner 手动触发。 |
-| FastAPI Cloud 部署 | [FastAPI Cloud 部署说明](../deployment.md)。使用外部 PostgreSQL，配置部署凭据后可从 GitHub Actions 发布。 |
+| FastAPI Cloud 部署 | [FastAPI Cloud 部署说明](../deployment.md)。配置外部 PostgreSQL 和部署凭据后，在 GitHub Actions 手动运行 `Deploy`。 |
 | GitHub Actions | [工作流目录](../.github/workflows/)，包含 API 测试、Playwright、Compose 启动检查和两条发布路径。 |
 | 上游本地开发方式 | [开发说明](../development.md)，包括全容器运行、邮件和配置。 |
