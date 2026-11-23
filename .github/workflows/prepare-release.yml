@@ -20,6 +20,7 @@ permissions: {}
 
 jobs:
   prepare-release:
+    if: github.ref == 'refs/heads/develop' && vars.ENABLE_PR_SUBMIT == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -57,12 +58,12 @@ jobs:
         uses: tiangolo/pr-submit@d802fdf59bde80bc3eb8bd3259f4cbeec63de4aa # 0.0.1
       - name: Create release pull request
         env:
-          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          BASE_BRANCH: develop
           GH_TOKEN: ${{ steps.pr-submit.outputs.token }}
           VERSION: ${{ steps.release-version.outputs.version }}
         run: |
           set -euo pipefail
-          branch="release-${VERSION}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          branch="feat/release-${VERSION}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git config user.name "pr-submit[bot]"
           git config user.email "pr-submit[bot]@users.noreply.github.com"
           git switch -c "$branch"

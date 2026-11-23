@@ -3,6 +3,7 @@ name: Test Backend
 on:
   push:
     branches:
+      - develop
       - master
   pull_request:
 permissions:

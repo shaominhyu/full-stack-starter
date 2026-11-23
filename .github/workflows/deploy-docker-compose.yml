@@ -7,35 +7,42 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-docker-compose
+  group: deploy-docker-compose-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   deploy:
-    # Do not deploy the template repository, only projects created from it
-    if: github.repository != 'fastapi/full-stack-fastapi-template'
-    runs-on: self-hosted
+    if: >-
+      (github.ref == 'refs/heads/develop' && vars.TESTING_COMPOSE_DEPLOY_ENABLED == 'true') ||
+      (github.ref == 'refs/heads/master' && vars.PRODUCTION_COMPOSE_DEPLOY_ENABLED == 'true')
+    runs-on:
+      - self-hosted
+      - ${{ github.ref_name == 'master' && 'fullstack-production' || 'fullstack-testing' }}
     timeout-minutes: 30
     env:
-      DOMAIN: ${{ vars.DOMAIN }}
-      PROJECT_NAME: ${{ vars.PROJECT_NAME }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      FIRST_SUPERUSER: ${{ vars.FIRST_SUPERUSER }}
-      FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
-      SMTP_HOST: ${{ vars.SMTP_HOST }}
-      SMTP_USER: ${{ vars.SMTP_USER }}
-      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-      EMAILS_FROM_EMAIL: ${{ vars.EMAILS_FROM_EMAIL }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      SENTRY_DSN: ${{ vars.SENTRY_DSN }}
+      DEPLOY_PREFIX: ${{ github.ref_name == 'master' && 'PRODUCTION' || 'TESTING' }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Build
-        run: docker compose -f compose.yml -f compose.deploy.yml build
-      - name: Prepare database
-        run: docker compose -f compose.yml -f compose.deploy.yml run --rm backend bash scripts/prestart.sh
-      - name: Start application
-        run: docker compose -f compose.yml -f compose.deploy.yml up -d
+      - name: Build, migrate and start application
+        env:
+          DOMAIN: ${{ vars[format('{0}_DOMAIN', env.DEPLOY_PREFIX)] }}
+          PROJECT_NAME: ${{ vars[format('{0}_PROJECT_NAME', env.DEPLOY_PREFIX)] }}
+          SECRET_KEY: ${{ secrets[format('{0}_SECRET_KEY', env.DEPLOY_PREFIX)] }}
+          FIRST_SUPERUSER: ${{ vars[format('{0}_FIRST_SUPERUSER', env.DEPLOY_PREFIX)] }}
+          FIRST_SUPERUSER_PASSWORD: ${{ secrets[format('{0}_FIRST_SUPERUSER_PASSWORD', env.DEPLOY_PREFIX)] }}
+          SMTP_HOST: ${{ vars[format('{0}_SMTP_HOST', env.DEPLOY_PREFIX)] }}
+          SMTP_USER: ${{ vars[format('{0}_SMTP_USER', env.DEPLOY_PREFIX)] }}
+          SMTP_PASSWORD: ${{ secrets[format('{0}_SMTP_PASSWORD', env.DEPLOY_PREFIX)] }}
+          EMAILS_FROM_EMAIL: ${{ vars[format('{0}_EMAILS_FROM_EMAIL', env.DEPLOY_PREFIX)] }}
+          POSTGRES_PASSWORD: ${{ secrets[format('{0}_POSTGRES_PASSWORD', env.DEPLOY_PREFIX)] }}
+          SENTRY_DSN: ${{ vars[format('{0}_SENTRY_DSN', env.DEPLOY_PREFIX)] }}
+        run: |
+          set -euo pipefail
+          compose=(docker compose -p "fullstack-${DEPLOY_PREFIX,,}" -f compose.yml -f compose.deploy.yml)
+          "${compose[@]}" config --quiet
+          "${compose[@]}" build
+          "${compose[@]}" run --rm backend bash scripts/prestart.sh
+          "${compose[@]}" up -d --wait

@@ -66,9 +66,16 @@ The included `.github/workflows/deploy-docker-compose.yml` workflow runs the dep
 
 Use a self-hosted runner only for a repository whose contributors and workflow code you trust. GitHub recommends using self-hosted runners with private repositories because workflows execute directly on the runner machine.
 
+| Branch | Deployment | Runner label | Variable and secret prefix | Enable variable |
+| --- | --- | --- | --- | --- |
+| `develop` | Testing | `fullstack-testing` | `TESTING_` | `TESTING_COMPOSE_DEPLOY_ENABLED` |
+| `master` | Production | `fullstack-production` | `PRODUCTION_` | `PRODUCTION_COMPOSE_DEPLOY_ENABLED` |
+
+Configure the targets on separate hosts with their own domains and databases. Set the corresponding enable variable to `true` after configuring the host and its GitHub settings.
+
 ### Configure Repository Variables and Secrets
 
-In the repository, go to **Settings** > **Secrets and variables** > **Actions** and add these repository variables:
+In the repository, go to **Settings** > **Secrets and variables** > **Actions** and add the following using the prefix for your target. For example, testing uses `TESTING_DOMAIN` and `TESTING_POSTGRES_PASSWORD`. The required repository variables are:
 
 * `DOMAIN`
 * `PROJECT_NAME`
@@ -100,7 +107,7 @@ sudo usermod -aG docker github
 sudo su - github
 ```
 
-In the GitHub repository, go to **Settings** > **Actions** > **Runners**, select **New self-hosted runner**, choose Linux, and follow the commands GitHub provides to download, configure, and register the runner. Install it in `/home/github/actions-runner`.
+In the GitHub repository, go to **Settings** > **Actions** > **Runners**, select **New self-hosted runner**, choose Linux, and follow the commands GitHub provides to download, configure, and register the runner. Install it in `/home/github/actions-runner` and assign the label for that host from the table above.
 
 After registering the runner, exit the `github` user session and install the runner as a system service:
 
@@ -116,7 +123,7 @@ See GitHub's guides for [adding a self-hosted runner](https://docs.github.com/en
 
 ### Run the Deployment
 
-When the runner is online, open the repository's **Actions** tab, select **Deploy with Docker Compose**, and select **Run workflow**.
+When the runner is online, open the repository's **Actions** tab, select **Deploy with Docker Compose**, select the branch for the target, and select **Run workflow**.
 
 ## URLs
 

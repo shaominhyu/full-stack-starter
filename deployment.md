@@ -44,7 +44,7 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 
 ## Configure Continuous Deployment
 
-Run the **Deploy** workflow manually from the **Actions** tab after configuring the application and database. The workflow builds the frontend, prepares the database, and deploys the application.
+After configuring the application and database, run **Deploy** manually from the **Actions** tab with `master` selected. The workflow builds the frontend, prepares the database, and deploys the application.
 
 Log in to FastAPI Cloud and configure the [deploy token](https://fastapicloud.com/docs/advanced-features/deploy-tokens/) and application ID as GitHub repository secrets:
 
@@ -55,16 +55,17 @@ uv run fastapi cloud setup-ci --secrets-only --app-id <your-app-id>
 
 If the GitHub CLI is installed and authenticated, the command configures `FASTAPI_CLOUD_TOKEN` and `FASTAPI_CLOUD_APP_ID` automatically. Otherwise, it prints the values so you can add them in your repository under **Settings** > **Secrets and variables** > **Actions**.
 
-The workflow runs database migrations and creates the first superuser before deploying. In the repository's **Settings** > **Secrets and variables** > **Actions** page, add these repository variables:
+The workflow runs database migrations and creates the first superuser before deploying. Under **Settings** > **Secrets and variables** > **Actions**, add these repository variables:
 
-* `PROJECT_NAME`
-* `FIRST_SUPERUSER`
+* `PRODUCTION_PROJECT_NAME`
+* `PRODUCTION_FIRST_SUPERUSER`
+* `PRODUCTION_CLOUD_DEPLOY_ENABLED` set to `true` after completing the setup.
 
 Add these repository secrets:
 
 * `DATABASE_URL`
-* `SECRET_KEY`
-* `FIRST_SUPERUSER_PASSWORD`
+* `PRODUCTION_SECRET_KEY`
+* `PRODUCTION_FIRST_SUPERUSER_PASSWORD`
 
 Use the same values configured in FastAPI Cloud. For `DATABASE_URL`, use the connection URL from your database provider. The database must be reachable from GitHub-hosted runners so the preparation step can connect to it.
 
@@ -86,12 +87,8 @@ Interactive API docs: `https://your-app.fastapicloud.dev/docs`
 
 For deployment to your own server, see the [Docker Compose deployment guide](./deployment-docker-compose.md).
 
-## GitHub Repository Automation
+## Optional GitHub Repository Automation
 
-Install the following GitHub Apps to enable the included repository automation:
+To use **Prepare Release**, install [PR Submit](https://github.com/apps/pr-submit) and set the repository variable `ENABLE_PR_SUBMIT=true`. Run the workflow from `develop`. It opens a task PR targeting `develop`.
 
-* [Latest Changes](https://github.com/apps/latest-changes) updates `release-notes.md` when a pull request is merged.
-* [PR Push](https://github.com/apps/pr-push) lets the pre-commit workflow push automated fixes to pull request branches.
-* [PR Submit](https://github.com/apps/pr-submit) lets the **Bump pre-commit hooks** and **Prepare Release** workflows create pull requests.
-
-To publish code coverage with [Smokeshow](https://github.com/samuelcolvin/smokeshow), add `SMOKESHOW_AUTH_KEY` as a repository secret.
+To publish coverage with [Smokeshow](https://github.com/samuelcolvin/smokeshow), set the repository variable `ENABLE_SMOKESHOW=true` and provide the `SMOKESHOW_AUTH_KEY` repository secret. Backend coverage is already available as a GitHub Actions artifact.

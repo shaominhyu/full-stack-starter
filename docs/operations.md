@@ -13,7 +13,7 @@
 
 ## 本地启动
 
-以下命令从仓库根目录执行，适用于 Bash。代码块共用启动容器时定义的 `root` 和 `compose` 变量。分开调用命令时，在该调用中重新定义需要的变量。启动前确认 Docker 正在运行。若项目服务已运行且验证通过，直接返回访问地址。端口被占用时，先确认进程归属。
+以下命令从仓库根目录执行，适用于 Bash。代码块共用启动容器时定义的 `root` 和 `compose` 变量。分开调用命令时，在该调用中重新定义需要的变量。启动前确认 Docker 正在运行。若本仓库的服务已运行且验证通过，直接返回访问地址。端口被占用时，先确认进程归属。
 
 首次安装或锁文件更新后同步依赖。Python 版本见根目录的 `.python-version`，Python 依赖用 uv，前端依赖用 Bun。已有可用依赖的日常启动可直接从启动容器开始。
 
@@ -26,7 +26,7 @@ bun install --frozen-lockfile
 
 ### 启动数据库和测试邮箱
 
-本地覆盖文件首次启动时生成，后续沿用。Compose 项目名 `fullstack-local` 对应现有数据库卷 `fullstack-local_app-db-data`。
+本地覆盖文件首次启动时生成，后续沿用。Compose 项目名 `fullstack-starter-local` 对应本仓库的数据库卷 `fullstack-starter-local_app-db-data`。
 
 ```bash
 root="$(git rev-parse --show-toplevel)"
@@ -51,7 +51,7 @@ services:
       ADMINER_DEFAULT_SERVER: db
 YAML
 fi
-compose=(docker compose -p fullstack-local -f compose.yml -f compose.override.yml
+compose=(docker compose -p fullstack-starter-local -f compose.yml -f compose.override.yml
   -f "$local_dir/compose.loopback.yml")
 "${compose[@]}" up -d --wait db mailpit
 ```
@@ -72,14 +72,14 @@ compose=(docker compose -p fullstack-local -f compose.yml -f compose.override.ym
 在 Linux 用户会话中用下面的命令让前后端在后台运行。已有的活动服务会被复用。机器重启后按本节重新启动。若当前环境没有 systemd 用户会话，在两个终端分别进入命令指定的目录，直接运行对应的 FastAPI 和 Vite 命令。
 
 ```bash
-if ! systemctl --user is-active --quiet fullstack-local-api; then
-  systemd-run --user --unit=fullstack-local-api --collect \
+if ! systemctl --user is-active --quiet fullstack-starter-local-api; then
+  systemd-run --user --unit=fullstack-starter-local-api --collect \
     --working-directory="$root/backend" \
     --setenv="PATH=$root/.venv/bin:$PATH" \
     "$root/.venv/bin/fastapi" dev --host 127.0.0.1 --port 8000
 fi
-if ! systemctl --user is-active --quiet fullstack-local-web; then
-  systemd-run --user --unit=fullstack-local-web --collect \
+if ! systemctl --user is-active --quiet fullstack-starter-local-web; then
+  systemd-run --user --unit=fullstack-starter-local-web --collect \
     --working-directory="$root/frontend" --setenv="PATH=$PATH" \
     "$(command -v npm)" run dev -- --host 127.0.0.1 --port 5173 --strictPort
 fi
@@ -96,12 +96,12 @@ curl -fsS --retry 10 --retry-connrefused --retry-delay 1 -o /dev/null http://loc
 "${compose[@]}" ps db mailpit
 ```
 
-应用失败时用 `journalctl --user -u fullstack-local-api -u fullstack-local-web -n 100` 查看日志。数据库和邮件服务日志用 `"${compose[@]}" logs --tail 100 db mailpit` 查看。
+应用失败时用 `journalctl --user -u fullstack-starter-local-api -u fullstack-starter-local-web -n 100` 查看日志。数据库和邮件服务日志用 `"${compose[@]}" logs --tail 100 db mailpit` 查看。
 
 停止后台应用后，可以用 Compose 的 `stop` 停止开发容器并保留数据库卷。后续用相同的项目名和配置启动即可继续使用这些数据。
 
 ```bash
-systemctl --user stop fullstack-local-web fullstack-local-api
+systemctl --user stop fullstack-starter-local-web fullstack-starter-local-api
 "${compose[@]}" stop db mailpit adminer
 ```
 
@@ -123,11 +123,11 @@ Adminer 是模板自带的图形化数据库管理工具。已有本地覆盖文
 
 ## 生产部署和 CI/CD
 
-生产设置和发布命令以对应的上游文档为准。生产数据库和密钥由部署环境提供。
+测试环境选 `develop`，生产环境选 `master`。测试和生产使用独立的服务器、域名、数据库和部署凭据。准备好目标后，从对应分支手动运行部署。GitHub Actions 会在推送到 `develop` 和 `master` 时运行集成检查。
 
 | 任务 | 入口 |
 | --- | --- |
-| 自托管部署 | [Docker Compose 部署说明](../deployment-docker-compose.md)。使用 `compose.yml` 与 `compose.deploy.yml`，Traefik 提供 HTTPS，发布工作流由服务器上的自托管 Runner 手动触发。 |
-| FastAPI Cloud 部署 | [FastAPI Cloud 部署说明](../deployment.md)。配置外部 PostgreSQL 和部署凭据后，在 GitHub Actions 手动运行 `Deploy`。 |
+| 自托管部署 | [Docker Compose 部署说明](../deployment-docker-compose.md)。使用 `compose.yml` 与 `compose.deploy.yml`，Traefik 提供 HTTPS，在 GitHub 手动触发工作流，由目标服务器上的自托管 Runner 执行。 |
+| FastAPI Cloud 部署 | [FastAPI Cloud 部署说明](../deployment.md)。配置外部 PostgreSQL 和部署凭据后，从 `master` 手动运行 `Deploy`。 |
 | GitHub Actions | [工作流目录](../.github/workflows/)，包含 API 测试、Playwright、Compose 启动检查和两条发布路径。 |
 | 上游本地开发方式 | [开发说明](../development.md)，包括全容器运行、邮件和配置。 |

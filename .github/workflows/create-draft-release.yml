@@ -2,6 +2,7 @@ name: Create Draft Release
 
 on:
   pull_request:
+    branches: [master]
     types:
       - closed
 
@@ -22,7 +23,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0

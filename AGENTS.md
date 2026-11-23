@@ -11,7 +11,7 @@
 | 创建或复用 worktree、命名分支、写提交信息和 PR/MR | [Worktree 开发流程](docs/worktree-workflow.md) |
 | 提交前跑测试、检查代码复用 | [质量检查](docs/quality-checks.md) |
 
-开始修改源码前，先读取 `docs/worktree-workflow.md`，再按其中的命名约定创建或复用任务 worktree。日常业务改动在独立 worktree 的任务分支上完成。主工作目录用于运行项目、排查和同步主分支。日常变更推送任务分支，通过 PR/MR 合入 `master`。
+开始修改源码前，先读取 `docs/worktree-workflow.md`，从最新的 `origin/develop` 创建或复用 `feat/*` worktree。日常改动通过 PR 合入 `develop`。生产发布通过 `develop → master` 的 PR 进行。主工作目录用于运行项目、排查和同步分支。
 
 用户说「启动项目」时，在主工作目录按运维手册启动本地开发环境。先检查现有服务，复用已运行的实例。启动后验证页面和 API，向用户报告访问地址及实际验证结果。
 

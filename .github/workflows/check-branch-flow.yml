@@ -1,0 +1,32 @@
+name: Branch flow
+
+on:
+  pull_request:
+    branches: [develop, master]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions: {}
+
+jobs:
+  check-branch-flow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check source and target branches
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          set -euo pipefail
+          if [[ "$HEAD_REPOSITORY" != "$GITHUB_REPOSITORY" ]]; then
+            echo "::error::Use a source branch in this repository."
+            exit 1
+          fi
+          case "$BASE_BRANCH:$HEAD_BRANCH" in
+            develop:feat/?*|master:develop) ;;
+            *)
+              echo "::error::Open task PRs from feat/* to develop and release PRs from develop to master."
+              exit 1
+              ;;
+          esac
