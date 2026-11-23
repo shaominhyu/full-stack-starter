@@ -11,16 +11,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    if: >-
-      (github.ref == 'refs/heads/develop' && vars.TESTING_COMPOSE_DEPLOY_ENABLED == 'true') ||
-      (github.ref == 'refs/heads/master' && vars.PRODUCTION_COMPOSE_DEPLOY_ENABLED == 'true')
-    runs-on:
-      - self-hosted
-      - ${{ github.ref_name == 'master' && 'fullstack-production' || 'fullstack-testing' }}
+  deploy-testing:
+    if: github.ref == 'refs/heads/develop' && vars.TESTING_COMPOSE_DEPLOY_ENABLED == 'true'
+    runs-on: [self-hosted, fullstack-testing]
     timeout-minutes: 30
-    env:
-      DEPLOY_PREFIX: ${{ github.ref_name == 'master' && 'PRODUCTION' || 'TESTING' }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -28,21 +22,39 @@ jobs:
           persist-credentials: false
       - name: Build, migrate and start application
         env:
-          DOMAIN: ${{ vars[format('{0}_DOMAIN', env.DEPLOY_PREFIX)] }}
-          PROJECT_NAME: ${{ vars[format('{0}_PROJECT_NAME', env.DEPLOY_PREFIX)] }}
-          SECRET_KEY: ${{ secrets[format('{0}_SECRET_KEY', env.DEPLOY_PREFIX)] }}
-          FIRST_SUPERUSER: ${{ vars[format('{0}_FIRST_SUPERUSER', env.DEPLOY_PREFIX)] }}
-          FIRST_SUPERUSER_PASSWORD: ${{ secrets[format('{0}_FIRST_SUPERUSER_PASSWORD', env.DEPLOY_PREFIX)] }}
-          SMTP_HOST: ${{ vars[format('{0}_SMTP_HOST', env.DEPLOY_PREFIX)] }}
-          SMTP_USER: ${{ vars[format('{0}_SMTP_USER', env.DEPLOY_PREFIX)] }}
-          SMTP_PASSWORD: ${{ secrets[format('{0}_SMTP_PASSWORD', env.DEPLOY_PREFIX)] }}
-          EMAILS_FROM_EMAIL: ${{ vars[format('{0}_EMAILS_FROM_EMAIL', env.DEPLOY_PREFIX)] }}
-          POSTGRES_PASSWORD: ${{ secrets[format('{0}_POSTGRES_PASSWORD', env.DEPLOY_PREFIX)] }}
-          SENTRY_DSN: ${{ vars[format('{0}_SENTRY_DSN', env.DEPLOY_PREFIX)] }}
-        run: |
-          set -euo pipefail
-          compose=(docker compose -p "fullstack-${DEPLOY_PREFIX,,}" -f compose.yml -f compose.deploy.yml)
-          "${compose[@]}" config --quiet
-          "${compose[@]}" build
-          "${compose[@]}" run --rm backend bash scripts/prestart.sh
-          "${compose[@]}" up -d --wait
+          DOMAIN: ${{ vars.TESTING_DOMAIN }}
+          PROJECT_NAME: ${{ vars.TESTING_PROJECT_NAME }}
+          FIRST_SUPERUSER: ${{ vars.TESTING_FIRST_SUPERUSER }}
+          SMTP_HOST: ${{ vars.TESTING_SMTP_HOST }}
+          SMTP_USER: ${{ vars.TESTING_SMTP_USER }}
+          EMAILS_FROM_EMAIL: ${{ vars.TESTING_EMAILS_FROM_EMAIL }}
+          SENTRY_DSN: ${{ vars.TESTING_SENTRY_DSN }}
+          SECRET_KEY: ${{ secrets.TESTING_SECRET_KEY }}
+          FIRST_SUPERUSER_PASSWORD: ${{ secrets.TESTING_FIRST_SUPERUSER_PASSWORD }}
+          SMTP_PASSWORD: ${{ secrets.TESTING_SMTP_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.TESTING_POSTGRES_PASSWORD }}
+        run: bash scripts/deploy-docker-compose.sh fullstack-testing
+
+  deploy-production:
+    if: github.ref == 'refs/heads/master' && vars.PRODUCTION_COMPOSE_DEPLOY_ENABLED == 'true'
+    runs-on: [self-hosted, fullstack-production]
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build, migrate and start application
+        env:
+          DOMAIN: ${{ vars.PRODUCTION_DOMAIN }}
+          PROJECT_NAME: ${{ vars.PRODUCTION_PROJECT_NAME }}
+          FIRST_SUPERUSER: ${{ vars.PRODUCTION_FIRST_SUPERUSER }}
+          SMTP_HOST: ${{ vars.PRODUCTION_SMTP_HOST }}
+          SMTP_USER: ${{ vars.PRODUCTION_SMTP_USER }}
+          EMAILS_FROM_EMAIL: ${{ vars.PRODUCTION_EMAILS_FROM_EMAIL }}
+          SENTRY_DSN: ${{ vars.PRODUCTION_SENTRY_DSN }}
+          SECRET_KEY: ${{ secrets.PRODUCTION_SECRET_KEY }}
+          FIRST_SUPERUSER_PASSWORD: ${{ secrets.PRODUCTION_FIRST_SUPERUSER_PASSWORD }}
+          SMTP_PASSWORD: ${{ secrets.PRODUCTION_SMTP_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.PRODUCTION_POSTGRES_PASSWORD }}
+        run: bash scripts/deploy-docker-compose.sh fullstack-production
