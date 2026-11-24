@@ -11,7 +11,7 @@
 ## 分支与目录命名
 
 - 任务分支用 `feat/<任务短名>`，例如 `feat/items-filter` 或 `feat/fix-login-redirect`。
-- 工作树放在主目录的 `worktrees/` 下，目录名用 `fullstack-feat-<任务短名>`。
+- 工作树放在主目录的 `worktrees/` 下。
 - 任务短名用小写英文和连字符。有 Issue 编号时可放在短名前，例如 `feat/42-login-redirect`。
 
 ## 创建或复用工作树
