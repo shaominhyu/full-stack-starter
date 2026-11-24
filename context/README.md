@@ -8,9 +8,9 @@ Full Stack Starter 基于 Full Stack FastAPI Template，为带身份验证、数
 | --- | --- |
 | 启动或停止本地服务、查看数据库 | [运维手册](guides/operations.md) |
 | 创建工作树、准备提交或运行质量检查 | [Worktree 开发流程](guides/worktree-workflow.md) · [质量检查](guides/quality-checks.md) |
-| 部署测试环境或生产环境，选择 Cloud 或自托管 Compose | [部署指南](guides/deployment.md) |
+| 部署测试环境或生产环境，选择 Cloud 或自托管 Compose | [部署指南](guides/operations.md#生产部署和-cicd) |
 | 合并后没有 Cloud 部署，或手动发布时任务被跳过 | [Cloud 部署由什么触发](questions/cloud-deploy-trigger.md) |
-| 提交任务 PR / MR 到 develop，或准备 develop → master 发布 PR | [提交合并请求](guides/merge-request.md) |
+| 提交任务 PR / MR 到 develop，或准备 develop → master 发布 PR | [提交合并请求](guides/worktree-workflow.md#提交和合并) |
 
 本地启动和日常操作可以直接查[运维手册](guides/operations.md)。查规范时以适用的正式手册为依据，查历史原因时可以沿条目里的证据回溯。
 

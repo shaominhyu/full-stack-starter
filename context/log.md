@@ -4,7 +4,7 @@
 
 ## 2026-11-24 · 首次收录
 
-按本次选定的范围建立[分环境部署](guides/deployment.md)和[提 PR/MR](guides/merge-request.md)的流程入口。部署主题下收录[Cloud 部署未触发或任务被跳过](questions/cloud-deploy-trigger.md)的排查依据，供接手时核对分支、触发方式和发布开关。
+按本次选定的范围建立[分环境部署](guides/operations.md#生产部署和-cicd)和[提 PR/MR](guides/worktree-workflow.md#提交和合并)的流程入口。部署主题下收录[Cloud 部署未触发或任务被跳过](questions/cloud-deploy-trigger.md)的排查依据，供接手时核对分支、触发方式和发布开关。
 
 ## 2026-11-24 · 合并手册目录
 

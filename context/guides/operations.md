@@ -125,6 +125,14 @@ Adminer 是模板自带的图形化数据库管理工具。已有本地覆盖文
 
 测试环境选 `develop`，生产环境选 `master`。测试和生产使用独立的服务器、域名、数据库和部署凭据。准备好目标后，从对应分支手动运行部署。GitHub Actions 会在推送到 `develop` 和 `master` 时运行集成检查。
 
+| 目标 | 在 Actions 中选择 | 运行条件 |
+| --- | --- | --- |
+| 自托管测试环境 | 在 `develop` 手动运行 **Deploy with Docker Compose** | `TESTING_COMPOSE_DEPLOY_ENABLED=true`，目标服务器的 Runner 带有 `fullstack-testing` 标签。 |
+| 自托管生产环境 | 将通过测试的 `develop` 版本经发布 PR 合入 `master`，在 `master` 手动运行 **Deploy with Docker Compose** | `PRODUCTION_COMPOSE_DEPLOY_ENABLED=true`，目标服务器的 Runner 带有 `fullstack-production` 标签。 |
+| FastAPI Cloud 生产环境 | 发布 PR 合入 `master` 后，在该分支手动运行 **Deploy** | 已配置应用、生产数据库与部署凭据，并设置 `PRODUCTION_CLOUD_DEPLOY_ENABLED=true`。 |
+
+查生产部署时以实际选中分支的配置为准，`develop` 上的工作流改动要经发布 PR 才会进入 `master`。部署后核对运行记录上的分支、提交和结果，再访问目标环境的应用及其 `/docs`。合并后没有 Cloud 发布记录时，查[触发条件的变更经过](../questions/cloud-deploy-trigger.md)。
+
 | 任务 | 入口 |
 | --- | --- |
 | 自托管部署 | [Docker Compose 部署说明](../../deployment-docker-compose.md)。使用 `compose.yml` 与 `compose.deploy.yml`，Traefik 提供 HTTPS，在 GitHub 手动触发工作流，由目标服务器上的自托管 Runner 执行。 |
