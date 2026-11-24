@@ -10,7 +10,6 @@
 | 前端交互或跨前后端的功能 | `bash scripts/test-isolated.sh browser tests/items.spec.ts` | 用浏览器跑用户操作，确认能提交并看到结果。将路径换成对应的用例，省略路径运行 Playwright 全套。 |
 | Dockerfile、Compose 或数据库迁移 | `bash scripts/test-isolated.sh compose` | 构建应用镜像、迁移空数据库、访问 API 健康检查和登录页。迁移改动还要跑受影响的后端测试。 |
 | 修改 Python 代码 | `(cd backend && uv run --locked bash scripts/lint.sh)` | 检查 Python 类型、lint 和格式。 |
-| 项目脉络条目、来源或检查器 | `python3 context/check.py`，修改检查器时另跑 `python3 -B -m unittest discover -s context/tests` | 核对本地依据，验证来源变更、缺失时能提示受影响的条目。 |
 | 修改前端代码 | `(cd frontend && bun run build)` | 用 TypeScript 检查类型，再构建前端。需要已安装前端依赖。 |
 | 修改应用源码或复用规则 | `bash scripts/check-duplication.sh origin/develop` | 以 PR 目标分支为基线，检查新增重复和违反复用规则的代码。发布 PR 以 `origin/master` 为基线。 |
 
@@ -25,4 +24,4 @@
 
 重复检查需要 Node.js 和 npm。首次执行时，脚本通过 npm 获取固定版本的工具。先从 PR/MR 的目标仓库更新本地目标分支引用，再用同一脚本和基线复现 CI 检查。
 
-GitHub Actions 在 PR 中使用目标提交运行 [重复代码检查](../.github/workflows/check-duplication.yml)。将 `check-duplication` 设为目标分支的必需状态检查后，失败的 PR 会被阻止合并。后端测试、浏览器测试和启动验证沿用仓库已有的工作流。
+GitHub Actions 在 PR 中使用目标提交运行 [重复代码检查](../../.github/workflows/check-duplication.yml)。将 `check-duplication` 设为目标分支的必需状态检查后，失败的 PR 会被阻止合并。后端测试、浏览器测试和启动验证沿用仓库已有的工作流。

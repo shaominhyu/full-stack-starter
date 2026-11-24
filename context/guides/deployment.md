@@ -12,8 +12,8 @@
 
 ## 核对来源
 
-- [运维手册的环境与发布入口](../../docs/operations.md#生产部署和-cicd) <!-- sha256:a682a92bb58fdc9baf6201eaab1b257aac9ae307813f086c4832e75bb7d7e459 -->
-- [FastAPI Cloud 部署手册](../../deployment.md#configure-continuous-deployment) <!-- sha256:aa7c420eafb7eaabebb218dd7e106cf305a402a8cefaca9e830fd95278e42198 -->
-- [Cloud 发布工作流](../../.github/workflows/deploy.yml) <!-- sha256:2e927dd8939c8194c325d72e76723661d5fdb0ce6d80c1ae969bc41cbb3e6fc8 -->
-- [自托管 Compose 部署手册](../../deployment-docker-compose.md#deploy-with-github-actions) <!-- sha256:7b7239e233f298aafa9da4b54b5ef085c44c5cde69c81821945b2372d3b26894 -->
-- [自托管发布工作流](../../.github/workflows/deploy-docker-compose.yml) <!-- sha256:d1d7b2b843fb0147fda484bb6a2c932632a0ab4b1d805e2fee13d5ab19529aa7 -->
+- [运维手册的环境与发布入口](operations.md#生产部署和-cicd)
+- [FastAPI Cloud 部署手册](../../deployment.md#configure-continuous-deployment)
+- [Cloud 发布工作流](../../.github/workflows/deploy.yml)
+- [自托管 Compose 部署手册](../../deployment-docker-compose.md#deploy-with-github-actions)
+- [自托管发布工作流](../../.github/workflows/deploy-docker-compose.yml)

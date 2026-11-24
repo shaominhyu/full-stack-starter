@@ -13,6 +13,6 @@
 
 ## 核对来源
 
-- [工作树、分支和合并约定](../../docs/worktree-workflow.md) <!-- sha256:7772cf31bb6b86a5e2eee878edb1914966e2cfe0cf8b4d30d221aef1a1bfaadb -->
-- [提交前的质量检查](../../docs/quality-checks.md) <!-- sha256:a15ed6504070ea24c11f3e5fc4c783040bc2565a6e960fd49faf4f075f34d743 -->
-- [PR 源分支与目标分支检查](../../.github/workflows/check-branch-flow.yml) <!-- sha256:b89c233122fac71aaa174aae0a94db3456891768c3e0d14a18d4f58c56918ce9 -->
+- [工作树、分支和合并约定](worktree-workflow.md)
+- [提交前的质量检查](quality-checks.md)
+- [PR 源分支与目标分支检查](../../.github/workflows/check-branch-flow.yml)

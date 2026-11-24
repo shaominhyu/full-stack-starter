@@ -17,5 +17,5 @@
 
 ## 核对来源
 
-- [当前 Cloud 发布工作流](../../.github/workflows/deploy.yml) <!-- sha256:2e927dd8939c8194c325d72e76723661d5fdb0ce6d80c1ae969bc41cbb3e6fc8 -->
-- [当前 Cloud 部署手册](../../deployment.md#configure-continuous-deployment) <!-- sha256:aa7c420eafb7eaabebb218dd7e106cf305a402a8cefaca9e830fd95278e42198 -->
+- [当前 Cloud 发布工作流](../../.github/workflows/deploy.yml)
+- [当前 Cloud 部署手册](../../deployment.md#configure-continuous-deployment)

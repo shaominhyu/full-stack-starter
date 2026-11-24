@@ -60,7 +60,7 @@ $ docker compose exec backend bash
 
 ## Backend Tests
 
-For local development, run the tests from the repository root using the isolated database described in the [quality checks guide](../docs/quality-checks.md):
+For local development, run the tests from the repository root using the isolated database described in the [quality checks guide](../context/guides/quality-checks.md):
 
 ```console
 $ bash scripts/test-isolated.sh backend
