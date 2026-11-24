@@ -11,7 +11,7 @@
 ## 分支与目录命名
 
 - 任务分支用 `feat/<任务短名>`，例如 `feat/items-filter` 或 `feat/fix-login-redirect`。
-- 工作树放在主目录的 `worktrees/` 下，目录名用 `fullstack-feat-<任务短名>`。
+- 工作树放在主目录的 `worktrees/` 下。
 - 任务短名用小写英文和连字符。有 Issue 编号时可放在短名前，例如 `feat/42-login-redirect`。
 
 ## 创建或复用工作树
@@ -47,6 +47,6 @@ PR/MR 正文写明改动原因、内容和实际验证结果。有相关 Issue �
 2. 向 `develop` 提任务 PR，使用 **Squash and merge**。确认合入后即可清理任务 worktree。
 3. 准备上线时，确认 `develop` 的待发布版本在测试环境通过验证，提 `develop → master` 发布 PR，使用 **Create a merge commit** 保留两条长期分支的合并关系。合并后按[运维手册](operations.md#生产部署和-cicd)发布。
 
-GitHub Actions 的 **Branch flow** 检查会核对 PR 的源分支和目标分支。支持分支保护的仓库可将 `check-branch-flow` 设为 `develop` 和 `master` 的必需检查。
+GitHub Actions 的 [**Branch flow** 检查](../../.github/workflows/check-branch-flow.yml)会核对 PR 的源仓库、源分支和目标分支，任务 PR 和发布 PR 都要求源分支属于本仓库。检查失败时可先核对这三项。支持分支保护的仓库可将 `check-branch-flow` 设为 `develop` 和 `master` 的必需检查。
 
 依赖版本由 `feat/*` 任务 PR 更新。Dependabot 的配置示例保存在 `.github/dependabot.yml.example`，可作为后续调整依赖更新流程的参考。

@@ -24,4 +24,4 @@
 
 重复检查需要 Node.js 和 npm。首次执行时，脚本通过 npm 获取固定版本的工具。先从 PR/MR 的目标仓库更新本地目标分支引用，再用同一脚本和基线复现 CI 检查。
 
-GitHub Actions 在 PR 中使用目标提交运行 [重复代码检查](../.github/workflows/check-duplication.yml)。将 `check-duplication` 设为目标分支的必需状态检查后，失败的 PR 会被阻止合并。后端测试、浏览器测试和启动验证沿用仓库已有的工作流。
+GitHub Actions 在 PR 中使用目标提交运行 [重复代码检查](../../.github/workflows/check-duplication.yml)。将 `check-duplication` 设为目标分支的必需状态检查后，失败的 PR 会被阻止合并。后端测试、浏览器测试和启动验证沿用仓库已有的工作流。
