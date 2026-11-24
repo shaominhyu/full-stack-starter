@@ -4,7 +4,7 @@
 
 ## 下次先查什么
 
-1. **没有运行记录。** 查看目标分支的 `.github/workflows/deploy.yml` 中的 `on`。当前只声明 `workflow_dispatch`，合并任务 PR 或发布 PR 都不会自动创建一条 Cloud 部署记录。需要发布时，按[部署指南](../guides/deployment.md)从 `master` 手动运行。
+1. **没有运行记录。** 查看目标分支的 `.github/workflows/deploy.yml` 中的 `on`。当前只声明 `workflow_dispatch`，合并任务 PR 或发布 PR 都不会自动创建一条 Cloud 部署记录。需要发布时，按[部署指南](../guides/operations.md#生产部署和-cicd)从 `master` 手动运行。
 2. **有运行记录，作业被跳过。** 查看该次运行所选分支以及工作流中作业的 `if` 条件。Cloud 作业要求选择 `master`，且仓库变量 `PRODUCTION_CLOUD_DEPLOY_ENABLED` 的值为 `true`。
 3. **作业已开始，随后失败。** 查看失败的具体步骤。构建、准备数据库、上传应用分别留下运行日志，可以据此缩小排查范围。
 
@@ -17,5 +17,5 @@
 
 ## 核对来源
 
-- [当前 Cloud 发布工作流](../../.github/workflows/deploy.yml) <!-- sha256:2e927dd8939c8194c325d72e76723661d5fdb0ce6d80c1ae969bc41cbb3e6fc8 -->
-- [当前 Cloud 部署手册](../../deployment.md#configure-continuous-deployment) <!-- sha256:aa7c420eafb7eaabebb218dd7e106cf305a402a8cefaca9e830fd95278e42198 -->
+- [当前 Cloud 发布工作流](../../.github/workflows/deploy.yml)
+- [当前 Cloud 部署手册](../../deployment.md#configure-continuous-deployment)

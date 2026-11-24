@@ -1,6 +1,6 @@
 # Full Stack Starter
 
-Based on [Full Stack FastAPI Template](https://github.com/fastapi/full-stack-fastapi-template). See the [MIT license](LICENSE) and the [branch and worktree workflow](docs/worktree-workflow.md).
+Based on [Full Stack FastAPI Template](https://github.com/fastapi/full-stack-fastapi-template). See the [MIT license](LICENSE) and the [branch and worktree workflow](context/guides/worktree-workflow.md).
 
 [![Test Docker Compose](../../actions/workflows/test-docker-compose.yml/badge.svg)](../../actions/workflows/test-docker-compose.yml)
 [![Test Backend](../../actions/workflows/test-backend.yml/badge.svg)](../../actions/workflows/test-backend.yml)
